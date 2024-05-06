@@ -1,0 +1,137 @@
+# Pour créer un nouveau github repository aller dans 
+=> https://github.com/new
+
+git clone <url> => To take the repository from the internet to download it onto our own computer 
+git add <filename> => To add a file the i want to keep track 
+git commit -m "message" => to take a snapshot of the current state of the repository keeping track of any of the changes that have been made to files that i have added using git add 
+git status => to see what's currently going on inside of my repository 
+git push => to push those changes to github
+git commit -am "message" => to combine git add and git commit 
+git pull => 
+
+
+
+Installer virtualenv via pip:
+	=> pip install virtualenv
+
+	Virtual Env
+		=> python -m venv c:\path\to\myenv
+
+	activer
+		=> c:\path\to\myenv\Scripts\activate
+		
+		Installer pip
+			=> python -m pip install <package-name>
+
+	Désactiver
+		=> deactivate
+
+Créer un fichier requirements.txt, qui contient une liste simple de tous les paquets qui sont dans l’environnement actuel
+	=> pip freeze > requirements.txt
+
+Installer les paquets 
+	=> pip install -r requirements.txt
+	
+	
+	
+DJANGO
+Accr
+Create project
+	=> django-admin startproject <Name Project>
+	
+	Run server 
+	=> python manage.py runserver
+		http://127.0.0.1:8000/
+	
+	In Django project create un app
+		=> python manage.py startapp <Name App>
+		in settings.py, INSTALLED_APPS is where django configures what apps are installed on this project and we have to add the new APP in the list
+		
+		=> access to th shell => pyhton manage.py shell
+
+
+Faire afficher une page de mon APP => from 12:42 to 28:00
+	1- views.py
+		In order to create a view in django, we're going to define a function with a 'request' argument.
+		The 'request' is going to represente th HTTP request that the user made in order to access our web server 
+		
+		# Create your views here.
+			def index(request):
+				return HttpResponse("Hello, world!")
+		HttpResponse => is a class created by Django that we have to import 
+		
+	2- urls.py =>	For my app, we have to create the new file urls.py Where we define a variable list 'urlpatterns' 
+					which will be a list of the allowable URLs tha can be accessed for this particalar APP
+		urlpatterns = [
+		path("", views.index, name="index"),
+		path("brian", views.brian(), name='brian')
+	]
+		"" : is the URL that the client has to visit and views.index : is the result that we have to display when client visit URL
+		
+	3- 	Go to urls.py of the PROJECT in order to add a new path that will lead my APP
+		path('app1/', include("app1.urls"))
+		'app1/' : first term of the url of my APP and include("app1.urls") : second term of the urls from my APP
+		
+	4- test => http://127.0.0.1:8000/app1/ for the first path or http://127.0.0.1:8000/app1/brian for the second
+	
+
+PASS from HttpResponse to render 		
+	# Create your views here.
+		def index(request):
+			return render(request,"app1/index.html")
+	
+	- create un folder "templates" in app1 folder / create another folder "app1" in templates folder refere to the "app1/index.html"
+
+STATIC FILES
+	- create un folder "static" in app1 folder / create another folder "app1" in static folder refere to the "app1/index.html" and create style.css
+	- in a index.html add {% load static %} at the top 
+	- add <link href="{% static 'newyear/style.css %}" rel="stylesheet"> in the head 
+	
+
+Introduction to the models 
+	- Every model is a python class
+	class Flight(models.Model):  # on crée une classe qui va hériter de models
+		# les paramètres du model
+		origin = models.CharField(max_length=64)
+		destination = models.CharField(max_length=64)
+		duration = models.IntegerField()
+		duration = models.IntegerField()
+
+		# Return a string representation of the object (Flight)
+		def __str__(self):
+			return f"{self.id} : {self.origin} to {self.destination}"
+	
+	- Type of Fields 
+		- models.CharField(max_length=64)
+		- models.IntegerField()
+		- models.ForeignKey(Airport, on_delete=models.CASCADE, related_name="departures") => To make reference to another table
+		- models.ManyToManyField(Flight, blank=True, related_name='passengers') => blank=True : on accepte qu'un passager n'est pas de vol
+
+	- Tell to Django to update the database to include information about the models created and that it's called : Migration
+		- python manage.py makemigrations => after creating models
+		- python manage.py migrate => apply the migration in the django's database
+		- select Flight from * => Flight.objects.all()
+		- 
+		
+Introduction to the admin App
+In order to use it, we have to create : 
+	- an administrate account inside of our Django web application => python manage.py createsuperuser
+	- In admin.py : 
+		from .models import Flight, Airport
+		# Register your models here.
+		admin.site.register(Airport)
+		admin.site.register(Flight)
+		
+			- import the models => from .models import Flight, Airport
+			- register the models to tell Django we want to use the admin App to be able to manipulate airports and flights 
+				admin.site.register(Airport) 
+				admin.site.register(Flight)
+		
+		It's possible to configure a admin interface in a particular way
+	
+
+
+
+{% csrf_token %} Pour que Django soit sûr que c'est bien notre APP qui va submit dans ce formulaire
+from django.contrib.auth.models import User
+user = User.objects.all()

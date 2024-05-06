@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    <dl >
+        {% for listing in listings %}
+        <address>
+            <a href="{% url 'listing' listing.name%}">
+                <strong>{{ listing.name }}</strong><br>
+            </a>
+            Price : {{ listing.price }} €<br>
+            Category : {{ listing.category }}<br>
+        </address>
+        {% endfor %}
+    </dl>
+    <br>
+
+
+{% endblock %}
